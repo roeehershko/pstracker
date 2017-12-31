@@ -1,0 +1,14 @@
+{
+  "name": "pstracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "express-cluster": "0.0.5",
+    "morgan": "^1.9.0"
+  }
+}
