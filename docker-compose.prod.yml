@@ -24,3 +24,4 @@ volumes:
     mongodbdata:
 networks:
   pstracker:
+    external: true
