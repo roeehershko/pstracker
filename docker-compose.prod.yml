@@ -1,0 +1,23 @@
+version: "3"
+services:
+  pstracker-nginx:
+    image: pstracker-nginx
+    links:
+      - pstracker:pstracker
+    ports:
+      - 80:80
+  pstracker:
+    image: pstracker
+    links:
+      - redis:redis
+      - pstracker-mongo:pastracker-mongo
+  redis:
+    image: redis
+  pstracker-mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodbdata:/data/db
+volumes:
+    mongodbdata:
