@@ -2,7 +2,7 @@
 let cluster = require('cluster');
 let redis = require('redis');
 let mongoClient = require('mongodb').MongoClient;
-let url = "mongodb://192.168.99.101:27017/pstracker";
+let url = "mongodb://pstracker-mongo:27017/pstracker";
 
 // Code to run if we're in the master process
 if (cluster.isMaster) {
@@ -17,7 +17,7 @@ if (cluster.isMaster) {
 } else {
 
     // Start new redis client
-    let client = redis.createClient('6379', '192.168.99.101');
+    let client = redis.createClient('6379', 'redis');
 
     // Include Express
     let express = require('express');
@@ -32,6 +32,8 @@ if (cluster.isMaster) {
     app.get('/', function (req, res) {
         // Convert query params to JSON and push to redis list
         client.lpush(redisKey, JSON.stringify(req.query));
+
+        //res.cookie('pstracker',randomNumber, { maxAge: 900000, httpOnly: true });
 
         // Send user message and end the request (*Not waiting for redis)
         res.send('Query params logged!, (Cluster #' + cluster.worker.id + ')');
@@ -78,4 +80,5 @@ if (cluster.isMaster) {
 
 // docker container exec -it nginxtest bash
 // docker run --name pstracker-mongo -d -p 27017:27017 mongo
-// docker run -d --name pstracker -p 8080 --link redis:redis --link pstracker-mongo:pstracker-mongo pstracker
+// docker run -d --name pstracker -p 3000:3000 --link redis:redis --link pstracker-mongo:pstracker-mongo pstracker
+// docker run -d --name pstracker-nginx -p 80:80 --link pstracker:pstracker pstracker-nginx
