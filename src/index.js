@@ -46,6 +46,8 @@ if (cluster.isMaster) {
         // Prevent error if redis is down
         if ( ! client) {
             res.send('Redis is down, (Cluster #' + cluster.worker.id + ')');
+            res.end();
+            return;
         }
 
         // Convert query params to JSON and push to redis list
