@@ -16,6 +16,9 @@ services:
       NODE_ENV: production
     deploy:
       replicas: 3
+    depends_on:
+      - redis
+      - pstracker-mongo
   redis:
     image: redis
     networks:
