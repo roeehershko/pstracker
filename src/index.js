@@ -72,7 +72,7 @@ if (cluster.isMaster) {
 
         try {
             // Connecting to mongo
-            mongoClient.connect(url, function (err, client) {
+            mongoClient.connect(url, function (err, mongoClient) {
                 console.log('Connected to Mongo - ' + err);
 
                 // Collect clicks from redis
@@ -94,7 +94,7 @@ if (cluster.isMaster) {
                         if (clicks.length) {
                             if (err) throw err;
                             // Select clicks collection
-                            let collection = client.db('pstracker').collection('clicks');
+                            let collection = mongoClient.db('pstracker').collection('clicks');
 
                             // Insert click (One by one) TODO.use insertMany
                             collection.insertMany(clicks, function (err, res) {
