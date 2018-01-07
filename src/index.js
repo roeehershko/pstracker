@@ -43,6 +43,11 @@ if (cluster.isMaster) {
 
     // Add a basic route – index page
     app.get('/', function (req, res) {
+        // Prevent error if redis is down
+        if ( ! client) {
+            res.send('Redis is down, (Cluster #' + cluster.worker.id + ')');
+        }
+
         // Convert query params to JSON and push to redis list
         client.lpush(redisKey, JSON.stringify(req.query));
         //res.cookie('pstracker',randomNumber, { maxAge: 900000, httpOnly: true });
@@ -60,6 +65,9 @@ if (cluster.isMaster) {
 
     // Collect clicks from redis and insert them to mongo every 10 seconds
     setInterval(function () {
+        // Prevent error if redis is down
+        if ( ! client) return;
+
         // Collect clicks from redis
         client.lrange(redisKey, 0, -1, function (err, data) {
             // After clicks collected, remove old keys to prevent duplications
