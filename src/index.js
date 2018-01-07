@@ -2,7 +2,15 @@
 let cluster = require('cluster');
 let redis = require('redis');
 let mongoClient = require('mongodb').MongoClient;
-let url = "mongodb://pstracker-mongo:27017/pstracker";
+let config;
+if (process.env.NODE_ENV === 'production') {
+    config = require('./config.prod.json');
+}
+else {
+    config = require('./config.dev.json');
+}
+
+let url = "mongodb://" + config.mongo.host + ":27017/pstracker";
 
 // Code to run if we're in the master process
 if (cluster.isMaster) {
@@ -32,7 +40,6 @@ if (cluster.isMaster) {
     app.get('/', function (req, res) {
         // Convert query params to JSON and push to redis list
         client.lpush(redisKey, JSON.stringify(req.query));
-
         //res.cookie('pstracker',randomNumber, { maxAge: 900000, httpOnly: true });
 
         // Send user message and end the request (*Not waiting for redis)
@@ -52,33 +59,35 @@ if (cluster.isMaster) {
         client.lrange(redisKey, 0, -1, function (err, data) {
             // After clicks collected, remove old keys to prevent duplications
             client.del(redisKey, function () {
+                let clicks = [];
                 data.forEach(function (click) {
                     // Convert redis JSON to JS object
                     click = JSON.parse(click);
 
                     // Verify that click is valid object
-                    if (click) {
-                        // Connecting to mongo
-                        mongoClient.connect(url, function (err, client) {
-                            if (err) throw err;
-                            // Select clicks collection
-                            let collection = client.db('pstracker').collection('clicks');
-
-                            // Insert click (One by one) TODO.use insertMany
-                            collection.insertOne(click, function (err, res) {
-                                if (err) throw err;
-                                // Close connection after insert
-                                client.close();
-                            });
-                        });
+                    if (click && click.c) {
+                        // Add click to array
+                        clicks.push(click);
                     }
                 });
+
+                if (clicks.length) {
+                    // Connecting to mongo
+                    mongoClient.connect(url, function (err, client) {
+                        console.log('Connected to Mongo - ' + err);
+                        if (err) throw err;
+                        // Select clicks collection
+                        let collection = client.db('pstracker').collection('clicks');
+
+                        // Insert click (One by one) TODO.use insertMany
+                        collection.insertMany(clicks, function (err, res) {
+                            if (err) throw err;
+                            // Close connection after insert
+                            client.close();
+                        });
+                    });
+                }
             });
         })
     }, 2000);
 }
-
-// docker container exec -it nginxtest bash
-// docker run --name pstracker-mongo -d -p 27017:27017 mongo
-// docker run -d --name pstracker -p 3000:3000 --link redis:redis --link pstracker-mongo:pstracker-mongo pstracker
-// docker run -d --name pstracker-nginx -p 80:80 --link pstracker:pstracker pstracker-nginx

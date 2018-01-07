@@ -2,22 +2,32 @@ version: "3"
 services:
   pstracker-nginx:
     build: ./nginx
-    links:
-      - pstracker:pstracker
+    networks:
+      - pstracker
     ports:
       - 80:80
   pstracker:
     build: ./src
-    links:
-      - redis:redis
-      - pstracker-mongo:pastracker-mongo
+    command: nodemon -L /src/index.js
+    volumes:
+      - ./src:/src
+    networks:
+      - pstracker
+    environment:
+      NODE_ENV: development
   redis:
     image: redis
+    networks:
+      - pstracker
   pstracker-mongo:
     image: mongo
     ports:
       - 27017:27017
     volumes:
       - mongodbdata:/data/db
+    networks:
+      - pstracker
 volumes:
     mongodbdata:
+networks:
+  pstracker:

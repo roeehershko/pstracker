@@ -6,18 +6,24 @@ services:
       - 80:80
     networks:
       - pstracker
+    deploy:
+      replicas: 3
   pstracker:
     image: pstracker
     networks:
       - pstracker
+    environment:
+      NODE_ENV: production
+    deploy:
+      replicas: 3
   redis:
     image: redis
     networks:
       - pstracker
+    deploy:
+      replicas: 3
   pstracker-mongo:
     image: mongo
-    ports:
-      - 27017:27017
     volumes:
       - mongodbdata:/data/db
     networks:
