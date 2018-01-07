@@ -9,7 +9,7 @@ services:
     deploy:
       replicas: 3
   pstracker:
-    image: pstracker
+    image: 127.0.0.1:5000/pstracker
     networks:
       - pstracker
     environment:
