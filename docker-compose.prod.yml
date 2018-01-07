@@ -1,7 +1,7 @@
 version: "3"
 services:
   pstracker-nginx:
-    image: pstracker-nginx
+    image: 127.0.0.1:5000/pstracker-nginx
     ports:
       - 80:80
     networks:
