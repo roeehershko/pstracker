@@ -25,7 +25,12 @@ if (cluster.isMaster) {
 } else {
 
     // Start new redis client
-    let client = redis.createClient('6379', 'redis');
+    let client;
+
+    setTimeout(function () {
+        redis.createClient('6379', 'redis');
+        console.log('Client Started !');
+    }, 4000);
 
     // Include Express
     let express = require('express');
