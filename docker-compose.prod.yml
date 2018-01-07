@@ -27,8 +27,12 @@ services:
       replicas: 3
   pstracker-mongo:
     image: mongo
+    volumes:
+      - mongodbdata:/data/db
     networks:
       - pstracker
+volumes:
+    mongodbdata:
 networks:
   pstracker:
     external: true
