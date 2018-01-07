@@ -100,7 +100,7 @@ if (cluster.isMaster) {
                             collection.insertMany(clicks, function (err, res) {
                                 if (err) throw err;
                                 // Close connection after insert
-                                client.close();
+                                mongoClient.close();
                             });
                         }
                     });
