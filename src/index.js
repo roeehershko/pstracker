@@ -44,19 +44,19 @@ if (cluster.isMaster) {
     // Add a basic route – index page
     app.get('/', function (req, res) {
         // Prevent error if redis is down
-        if ( ! client) {
+        if (client) {
+            // Convert query params to JSON and push to redis list
+            client.lpush(redisKey, JSON.stringify(req.query));
+            //res.cookie('pstracker',randomNumber, { maxAge: 900000, httpOnly: true });
+
+            // Send user message and end the request (*Not waiting for redis)
+            res.send('Query params logged!, (Cluster #' + cluster.worker.id + ')');
+            res.end();
+        }
+        else {
             res.send('Redis is down, (Cluster #' + cluster.worker.id + ')');
             res.end();
-            return;
         }
-
-        // Convert query params to JSON and push to redis list
-        client.lpush(redisKey, JSON.stringify(req.query));
-        //res.cookie('pstracker',randomNumber, { maxAge: 900000, httpOnly: true });
-
-        // Send user message and end the request (*Not waiting for redis)
-        res.send('Query params logged!, (Cluster #' + cluster.worker.id + ')');
-        res.end();
     });
 
     // Bind to a port
