@@ -70,39 +70,45 @@ if (cluster.isMaster) {
         // Prevent error if redis is down
         if ( ! client) return;
 
-        // Collect clicks from redis
-        client.lrange(redisKey, 0, -1, function (err, data) {
-            // After clicks collected, remove old keys to prevent duplications
-            client.del(redisKey, function () {
-                let clicks = [];
-                data.forEach(function (click) {
-                    // Convert redis JSON to JS object
-                    click = JSON.parse(click);
+        try {
+            // Connecting to mongo
+            mongoClient.connect(url, function (err, client) {
+                console.log('Connected to Mongo - ' + err);
 
-                    // Verify that click is valid object
-                    if (click && click.c) {
-                        // Add click to array
-                        clicks.push(click);
-                    }
-                });
+                // Collect clicks from redis
+                client.lrange(redisKey, 0, -1, function (err, data) {
+                    // After clicks collected, remove old keys to prevent duplications
+                    client.del(redisKey, function () {
+                        let clicks = [];
+                        data.forEach(function (click) {
+                            // Convert redis JSON to JS object
+                            click = JSON.parse(click);
 
-                if (clicks.length) {
-                    // Connecting to mongo
-                    mongoClient.connect(url, function (err, client) {
-                        console.log('Connected to Mongo - ' + err);
-                        if (err) throw err;
-                        // Select clicks collection
-                        let collection = client.db('pstracker').collection('clicks');
-
-                        // Insert click (One by one) TODO.use insertMany
-                        collection.insertMany(clicks, function (err, res) {
-                            if (err) throw err;
-                            // Close connection after insert
-                            client.close();
+                            // Verify that click is valid object
+                            if (click && click.c) {
+                                // Add click to array
+                                clicks.push(click);
+                            }
                         });
+
+                        if (clicks.length) {
+                            if (err) throw err;
+                            // Select clicks collection
+                            let collection = client.db('pstracker').collection('clicks');
+
+                            // Insert click (One by one) TODO.use insertMany
+                            collection.insertMany(clicks, function (err, res) {
+                                if (err) throw err;
+                                // Close connection after insert
+                                client.close();
+                            });
+                        }
                     });
-                }
+                })
             });
-        })
+        }
+        catch (e) {
+            console.log('Interval failed, probably mongo connection issue')
+        }
     }, 2000);
 }
