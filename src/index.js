@@ -27,8 +27,8 @@ if (cluster.isMaster) {
     // Start new redis client
     let client;
 
-    setTimeout(function () {
-        redis.createClient('6379', 'redis');
+    setInterval(function () {
+        client = redis.createClient('6379', 'redis');
         console.log('Client Started !');
     }, 4000);
 
