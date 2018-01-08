@@ -12,6 +12,7 @@ else {
 
 let url = "mongodb://" + config.mongo.host + ":27017/pstracker";
 
+
 // Code to run if we're in the master process
 if (cluster.isMaster) {
     // Count the machine's CPUs
@@ -27,10 +28,21 @@ if (cluster.isMaster) {
     // Start new redis client
     let client;
 
-    setInterval(function () {
-        client = redis.createClient('6379', 'redis');
-        console.log('Client Started !');
-    }, 4000);
+    let establishRedis = function () {
+        try {
+            client = redis.createClient('6379', 'redis');
+
+            client.on("error", function (err) {
+                establishRedis()
+            });
+        }
+        catch (e) {
+            establishRedis();
+        }
+    };
+
+    // Attempt to open redis connection
+    establishRedis();
 
     // Include Express
     let express = require('express');
@@ -73,7 +85,9 @@ if (cluster.isMaster) {
         try {
             // Connecting to mongo
             mongoClient.connect(url, function (err, mongoClient) {
-                console.log('Connected to Mongo - ' + err);
+                console.log('Connection Opened');
+                // Return on error
+                if (err) throw new Error();
 
                 // Collect clicks from redis
                 client.lrange(redisKey, 0, -1, function (err, data) {
@@ -94,14 +108,19 @@ if (cluster.isMaster) {
                         if (clicks.length) {
                             if (err) throw err;
                             // Select clicks collection
-                            let collection = mongoClient.db('pstracker').collection('clicks');
+                            let collection = mongoClient.db('pstracker').collection('events');
 
                             // Insert click (One by one) TODO.use insertMany
                             collection.insertMany(clicks, function (err, res) {
                                 if (err) throw err;
                                 // Close connection after insert
                                 mongoClient.close();
+                                console.log('Connection Closed');
                             });
+                        }
+                        else
+                        {
+                            mongoClient.close();
                         }
                     });
                 })
