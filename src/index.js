@@ -1,20 +1,7 @@
 // Include Modules
 let cluster = require('cluster');
-let mongoClient = require('mongodb').MongoClient;
-let redisCollector = new require('./redis-collector').redisEventsCollector;
-let eventsDump = new require('./event-dump').eventDump;
-
-let config;
-
-if (process.env.NODE_ENV === 'production') {
-    config = require('./config.prod.json');
-}
-else {
-    config = require('./config.dev.json');
-}
-
-let url = "mongodb://" + config.mongo.host + ":27017/pstracker";
-
+let eventsDump = require('./event-dump').eventDump;
+let redisCollector = require('./redis-collector').redisEventsCollector;
 
 // Code to run if we're in the master process
 if (cluster.isMaster) {
@@ -41,8 +28,17 @@ if (cluster.isMaster) {
     app.get('/', function (req, res) {
         // Prevent error if redis is down
         if (redisCollector.isConnected()) {
+            // Get query data
+            let data = req.query;
+
+            // Add session ip
+            data.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+            // Add user agent
+            data.ua = req.headers['user-agent'];
+
             // Convert query params to JSON and push to redis list
-            redisCollector.pushEvent(JSON.stringify(req.query));
+            redisCollector.pushEvent(data);
             //res.cookie('pstracker',randomNumber, { maxAge: 900000, httpOnly: true });
 
             // Send user message and end the request (*Not waiting for redis)

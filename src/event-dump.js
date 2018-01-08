@@ -1,3 +1,9 @@
+let mongoClient = require('mongodb').MongoClient;
+let redisCollector = require('./redis-collector').redisEventsCollector;
+let eventsPusher = require('./event-pusher').eventPusher;
+let config = require('./config');
+let url = "mongodb://" + config.mongo.host + ":27017/pstracker";
+
 class EventDump {
 
     constructor() {
@@ -17,34 +23,39 @@ class EventDump {
 
     dumpEvents() {
         // Prevent error if redis is down
-        if (!redisCollector.getClient()) return;
+        if ( ! redisCollector.getClient()) return;
 
-        // Connecting to mongo
-        mongoClient.connect(url, function (err, mongoClient) {
-            console.log('Connection Opened');
-            // Return on error
-            if (err) throw new Error();
+        redisCollector.getEvents(function (clicks) {
+            if (clicks.length) {
 
-            redisCollector.getEvents(function (clicks) {
-                if (clicks.length) {
-                    if (err) throw err;
-                    // Select clicks collection
-                    let collection = mongoClient.db('pstracker').collection('events');
+                eventsPusher.push(clicks);
 
-                    // Insert click (One by one) TODO.use insertMany
-                    collection.insertMany(clicks, function (err) {
-                        if (err) throw err;
-                        // Close connection after insert
-                        mongoClient.close();
-                        console.log('Connection Closed');
-                    });
-                }
-                else {
-                    mongoClient.close();
-                }
+                // // Connecting to mongo
+                // mongoClient.connect(url, function (err, mongoClient) {
+                //     // Select clicks collection
+                //     let collection = mongoClient.db('pstracker').collection('triggers');
+                //
+                //     // Return on error
+                //     if (err) throw new Error();
+                //
+                //     try {
+                //         // Insert click (One by one)
+                //         collection.insertMany(clicks, function (err) {
+                //             if (err) throw err;
+                //
+                //             // Close connection after insert
+                //             mongoClient.close();
+                //         });
+                //     }
+                //     catch(e) {
+                //         // Close connection after insert
+                //         mongoClient.close();
+                //     }
+                // });
 
+                // Remove all events data
                 redisCollector.clearEvents();
-            });
+            }
         });
     }
 }

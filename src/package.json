@@ -6,6 +6,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aguid": "^2.0.0",
     "async-redis": "^1.0.0",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",

@@ -1,0 +1,51 @@
+db.getCollection("campaigns").update({ _id: ObjectId("5a5399a46b46651f740f2479") }, {
+    $set: {
+        "title": "Test Campaign",
+        "name": "test",
+        "sources": [
+            {
+                "title": "Google",
+                "name": "google",
+                "is_default": true
+            },
+            {
+                "title": "Facebook",
+                "name": "facebook"
+            }
+        ],
+        "events": [
+            {
+                "title": "Impression",
+                "name": "impression",
+                "revenue": 0.0,
+                "is_default": true
+            },
+            {
+                "title": "Install",
+                "name": "install",
+                "revenue": 30.5
+            }
+        ],
+        "endpoints": [
+            {
+                "lander": {
+                    "title": "Main",
+                    "url": "http://www.walla.co.il"
+                },
+                "weight": 50.0,
+                "roles": {
+                    "source": {
+                        "eq": "google"
+                    }
+                }
+            },
+            {
+                "lander": {
+                    "title": "Main",
+                    "url": "http://www.walla.co.il"
+                },
+                "weight": 50.0
+            }
+        ]
+    }
+})
