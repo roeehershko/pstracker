@@ -1,5 +1,53 @@
+//[
+//  {
+//    "lander": {
+//      "title": "Main",
+//      "url": "http://www.walla.co.il"
+//    },
+//    "weight": 2.0,
+//    "roles": {
+//      "source": {
+//        "eq": "google"
+//      }
+//    }
+//  },
+//  {
+//    "lander": {
+//      "title": "Main",
+//      "url": "http://www.walla.co.il"
+//    },
+//    "weight": 1.0
+//  },
+//  {
+//    "lander": {
+//      "title": "Main",
+//      "url": "http://www.walla.co.il"
+//    },
+//    "weight": 1.0
+//  }
+//]
 {
-  "mongo": {
-    "host": "pstracker-mongo"
-  }
+  "geo": [
+    {
+      "lander": {
+        "title": "Main",
+        "url": "http://www.walla.co.il"
+      },
+      "roles": {
+        "us": 2,
+        "uk": 3,
+        "default": 1
+      }
+    },
+    {
+      "lander": {
+        "title": "Main2",
+        "url": "http://www.walla.co.il"
+      },
+      "roles": {
+        "us": 2,
+        "uk": 3
+      }
+    }
+  ]
 }

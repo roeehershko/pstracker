@@ -24,6 +24,7 @@ if (cluster.isMaster) {
     redisCollector.setEventKey('clicks' + cluster.worker.id);
     // Set unique redis key for this cluster to prevent duplication in collection
 
+    let campaigns = [];
     // Add a basic route – index page
     app.get('/', function (req, res) {
         // Prevent error if redis is down
@@ -51,6 +52,10 @@ if (cluster.isMaster) {
         }
     });
 
+    app.post('/update-campaigns', function (req, res) {
+        campaigns = req.request;
+    });
+
     // Bind to a port
     app.listen(3000);
 
@@ -59,9 +64,4 @@ if (cluster.isMaster) {
 
     // Insert & Clean events from memory
     eventsDump.start();
-
-    // Collect clicks from redis and insert them to mongo every 10 seconds
-    setInterval(function () {
-
-    }, 2000);
 }

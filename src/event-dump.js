@@ -30,29 +30,6 @@ class EventDump {
 
                 eventsPusher.push(clicks);
 
-                // // Connecting to mongo
-                // mongoClient.connect(url, function (err, mongoClient) {
-                //     // Select clicks collection
-                //     let collection = mongoClient.db('pstracker').collection('triggers');
-                //
-                //     // Return on error
-                //     if (err) throw new Error();
-                //
-                //     try {
-                //         // Insert click (One by one)
-                //         collection.insertMany(clicks, function (err) {
-                //             if (err) throw err;
-                //
-                //             // Close connection after insert
-                //             mongoClient.close();
-                //         });
-                //     }
-                //     catch(e) {
-                //         // Close connection after insert
-                //         mongoClient.close();
-                //     }
-                // });
-
                 // Remove all events data
                 redisCollector.clearEvents();
             }
