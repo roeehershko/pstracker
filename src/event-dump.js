@@ -18,7 +18,7 @@ class EventDump {
             catch (e) {
                 console.log('Interval failed, probably mongo connection issue')
             }
-        }, 2000)
+        }, 6000)
     }
 
     dumpEvents() {

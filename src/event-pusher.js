@@ -100,6 +100,8 @@ class EventPusher {
     }
 
     insertBulkEventsDocuments(documents, cb) {
+        let start = (new Date()).getTime();
+
         mongoClient.connect(url, function (err, client) {
             let collections = client.db('pstracker').collection('peoples');
             let bulk = collections.initializeUnorderedBulkOp();
@@ -109,6 +111,8 @@ class EventPusher {
             });
 
             bulk.execute(function (err, result) {
+                let end = (new Date()).getTime();
+                console.log('Operation Time: ' + ((end - start) / 1000 + ' seconds');
                 cb()
             })
         });
