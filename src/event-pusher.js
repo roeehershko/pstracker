@@ -112,7 +112,7 @@ class EventPusher {
 
             bulk.execute(function (err, result) {
                 let end = (new Date()).getTime();
-                console.log('Operation Time: ' + ((end - start) / 1000 + ' seconds');
+                console.log('Operation Time: ' + ((end - start) / 1000 + ' seconds'));
                 cb()
             })
         });
