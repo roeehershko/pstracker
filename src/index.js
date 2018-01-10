@@ -40,7 +40,6 @@ if (cluster.isMaster) {
 
             // Convert query params to JSON and push to redis list
             redisCollector.pushEvent(data);
-            //res.cookie('pstracker',randomNumber, { maxAge: 900000, httpOnly: true });
 
             // Send user message and end the request (*Not waiting for redis)
             res.send('Query params logged!, (Cluster #' + cluster.worker.id + ')');

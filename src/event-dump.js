@@ -11,7 +11,7 @@ class EventDump {
 
     start() {
         const self = this;
-        setInterval(function () {
+        setTimeout(function () {
             try {
                 self.dumpEvents();
             }
@@ -32,6 +32,10 @@ class EventDump {
 
                 // Remove all events data
                 redisCollector.clearEvents();
+
+                setTimeout(function () {
+                    self.dumpEvents();
+                }, 2000);
             }
         });
     }
