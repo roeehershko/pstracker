@@ -18,7 +18,7 @@ class EventDump {
                     console.log('Restarting!');
                     setTimeout(function () {
                         self.start()
-                    }, 2000);
+                    }, 10000);
                 });
             }
             catch (e) {
@@ -40,7 +40,6 @@ class EventDump {
                     // Remove all events data
                     cb();
                 });
-
 
             }
             else {
