@@ -55,7 +55,8 @@ class RedisEventsCollector {
 
     getEvents(cb) {
         const self = this;
-        console.log('Getting Events!');
+        self.client = redis.createClient('6379', 'redis');
+
         // Collect clicks from redis
         this.client.lrange(this.eventKey, 0, -1, function (err, data) {
             self.clearEvents();
