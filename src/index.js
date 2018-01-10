@@ -24,7 +24,6 @@ if (cluster.isMaster) {
     redisCollector.setEventKey('clicks' + cluster.worker.id);
     // Set unique redis key for this cluster to prevent duplication in collection
 
-    let campaigns = [];
     // Add a basic route – index page
     app.get('/', function (req, res) {
         // Prevent error if redis is down
