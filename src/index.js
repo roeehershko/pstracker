@@ -1,6 +1,5 @@
 // Include Modules
 let cluster = require('cluster');
-let eventsDump = require('./event-dump').eventDump;
 let redisCollector = require('./redis-collector').redisEventsCollector;
 
 // Code to run if we're in the master process
@@ -21,9 +20,10 @@ if (cluster.isMaster) {
     // Create a new Express application
     let app = express();
 
-    redisCollector.setEventKey('clicks' + cluster.worker.id);
+    redisCollector.setEventKey('clicks');
     // Set unique redis key for this cluster to prevent duplication in collection
 
+    let campaigns = [];
     // Add a basic route – index page
     app.get('/', function (req, res) {
         // Prevent error if redis is down
@@ -56,7 +56,4 @@ if (cluster.isMaster) {
 
     // Log application runs per cluster (Should be as cpu core count)
     console.log('Application running #' + cluster.worker.id);
-
-    // Insert & Clean events from memory
-    eventsDump.start();
 }

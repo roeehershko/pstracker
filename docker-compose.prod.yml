@@ -21,6 +21,14 @@ services:
       replicas: 3
     depends_on:
       - redis
+  pstracker:
+    image: 127.0.0.1:5000/pstracker-pusher
+    networks:
+      - pstracker
+    environment:
+      NODE_ENV: production
+    deploy:
+      replicas: 1
   redis:
     image: redis
     networks:

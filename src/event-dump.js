@@ -1,4 +1,3 @@
-let mongoClient = require('mongodb').MongoClient;
 let redisCollector = require('./redis-collector').redisEventsCollector;
 let eventsPusher = require('./event-pusher').eventPusher;
 let config = require('./config');
@@ -18,7 +17,7 @@ class EventDump {
                 console.log('Restarting!');
                 setTimeout(function () {
                     self.start()
-                }, 10000);
+                }, 6000);
             });
         }
         catch (e) {
@@ -31,6 +30,7 @@ class EventDump {
         if ( ! redisCollector.getClient()) return;
 
         redisCollector.getEvents(function (clicks) {
+            console.log('TOTAL #' + clicks.length + ' Clicks');
             if (clicks.length) {
                 eventsPusher.push(clicks, function () {
                     // Remove all events data

@@ -7,14 +7,25 @@ services:
     ports:
       - 80:80
   pstracker:
-    build: ./src
-    command: nodemon -L /src/index.js
+     build: ./src
+     command: nodemon -L /src/index.js
+     volumes:
+       - ./src:/src
+     networks:
+       - pstracker
+     ports:
+       - 3000:3000
+     environment:
+       NODE_ENV: development
+  pstracker-pusher:
+    build:
+      context: ./src
+      dockerfile: pusher-docker
+    command: nodemon -L /src/pusher.js
     volumes:
       - ./src:/src
     networks:
       - pstracker
-    ports:
-      - 3000:3000
     environment:
       NODE_ENV: development
   redis:

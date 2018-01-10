@@ -5,7 +5,7 @@ class RedisEventsCollector {
     constructor() {
         this.client = null;
         this.connected = false;
-        this.eventKey = false;
+        this.eventKey = 'clicks';
         // Attempt to open redis connection
         this.establishRedis();
     }
