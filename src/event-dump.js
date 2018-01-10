@@ -42,9 +42,11 @@ class EventDump {
             if ( ! clicks.length) return cb();
 
             self.getClient(function (collection) {
-                collection.insertMany(clicks, function () {
-                    cb();
-                });
+                // collection.insertMany(clicks, function () {
+                //     cb();
+                // });
+
+                cb();
             });
 
             // Remove all events data
