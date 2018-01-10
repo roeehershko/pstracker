@@ -6,7 +6,7 @@ services:
       - target: 80
         published: 80
         protocol: tcp
-        mode: host
+        mode: bridge
     networks:
       - pstracker
     deploy:
