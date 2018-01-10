@@ -42,7 +42,7 @@ if (cluster.isMaster) {
             redisCollector.pushEvent(data);
 
             // Send user message and end the request (*Not waiting for redis)
-            res.send('Query params logged!, (Cluster #' + cluster.worker.id + ')');
+            res.send(JSON.stringify(req.headers));
             res.end();
         }
         else {
