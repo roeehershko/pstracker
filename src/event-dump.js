@@ -1,5 +1,6 @@
 let mongoClient = require('mongodb').MongoClient;
 let redisCollector = require('./redis-collector').redisEventsCollector;
+let eventsPusher = require('./event-pusher').eventPusher;
 let config = require('./config');
 let url = "mongodb://" + config.mongo.host + ":27017/pstracker";
 
@@ -13,9 +14,7 @@ class EventDump {
         setTimeout(function () {
             try {
                 self.dumpEvents(function () {
-                    setTimeout(function () {
-                        self.start.call(self);
-                    }, 2000);
+                    setTimeout(self.start, 2000);
                 });
             }
             catch (e) {
@@ -24,33 +23,28 @@ class EventDump {
         }, 6000)
     }
 
-    getClient(cb) {
-        const self = this;
-        mongoClient.connect(url, function (err, client) {
-            if (err) console.log('ERR:' + err);
-            let collection = client.db('pstracker').collection('peoples');
-            cb.call(self, collection);
-        });
-    }
-
-    dumpEvents(cb) {
+    dumpEvents() {
         const self = this;
         // Prevent error if redis is down
         if ( ! redisCollector.getClient()) return;
 
         redisCollector.getEvents(function (clicks) {
-            if ( ! clicks.length) return cb();
+            if (clicks.length) {
 
-            self.getClient(function (collection) {
-                // collection.insertMany(clicks, function () {
-                //     cb();
-                // });
+                eventsPusher.push(clicks, function () {
+                    setTimeout(function () {
+                        self.dumpEvents();
+                    }, 2000);
+                });
 
-                cb();
-            });
-
-            // Remove all events data
-            redisCollector.clearEvents();
+                // Remove all events data
+                redisCollector.clearEvents();
+            }
+            else {
+                setTimeout(function () {
+                    self.dumpEvents();
+                }, 2000);
+            }
         });
     }
 }
