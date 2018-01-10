@@ -45,7 +45,7 @@ class EventPusher {
                         : campaign.sources.find(o => o.is_default === true);
 
                     // Create unique identity for session campaign + ip + 4 days max
-                    const guid = aguid(campaign.name + '@' + event.ip);
+                    const guid = aguid(campaign.name + '@' + event.ip + (new Date().getTime()));
 
                     campaignEvent.revenue = parseFloat(event.r) ? event.r : campaignEvent.revenue || 0.0;
                     let session = {
