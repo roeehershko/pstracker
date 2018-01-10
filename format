@@ -1,0 +1,25 @@
+//{
+//  "geo": [
+//    {
+//      "lander": {
+//        "title": "Main",
+//        "url": "http://www.walla.co.il"
+//      },
+//      "roles": {
+//        "us": 2,
+//        "uk": 3,
+//        "default": 1
+//      }
+//    },
+//    {
+//      "lander": {
+//        "title": "Main2",
+//        "url": "http://www.walla.co.il"
+//      },
+//      "roles": {
+//        "us": 2,
+//        "uk": 3
+//      }
+//    }
+//  ]
+//}

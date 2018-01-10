@@ -42,17 +42,13 @@ if (cluster.isMaster) {
             redisCollector.pushEvent(data);
 
             // Send user message and end the request (*Not waiting for redis)
-            res.send(JSON.stringify(req.headers));
+            res.send('Query params logged!, (Cluster #' + cluster.worker.id + ')');
             res.end();
         }
         else {
             res.send('Redis is down, (Cluster #' + cluster.worker.id + ')');
             res.end();
         }
-    });
-
-    app.post('/update-campaigns', function (req, res) {
-        campaigns = req.request;
     });
 
     // Bind to a port

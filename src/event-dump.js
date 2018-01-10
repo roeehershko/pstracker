@@ -1,6 +1,5 @@
 let mongoClient = require('mongodb').MongoClient;
 let redisCollector = require('./redis-collector').redisEventsCollector;
-let eventsPusher = require('./event-pusher').eventPusher;
 let config = require('./config');
 let url = "mongodb://" + config.mongo.host + ":27017/pstracker";
 
@@ -13,7 +12,11 @@ class EventDump {
         const self = this;
         setTimeout(function () {
             try {
-                self.dumpEvents();
+                self.dumpEvents(function () {
+                    setTimeout(function () {
+                        self.start.call(self);
+                    }, 2000);
+                });
             }
             catch (e) {
                 console.log('Interval failed, probably mongo connection issue')
@@ -21,28 +24,31 @@ class EventDump {
         }, 6000)
     }
 
-    dumpEvents() {
+    getClient(cb) {
+        const self = this;
+        mongoClient.connect(url, function (err, client) {
+            if (err) console.log('ERR:' + err);
+            let collection = client.db('pstracker').collection('peoples');
+            cb.call(self, collection);
+        });
+    }
+
+    dumpEvents(cb) {
         const self = this;
         // Prevent error if redis is down
         if ( ! redisCollector.getClient()) return;
 
         redisCollector.getEvents(function (clicks) {
-            if (clicks.length) {
+            if ( ! clicks.length) return cb();
 
-                eventsPusher.push(clicks, function () {
-                    setTimeout(function () {
-                        self.dumpEvents();
-                    }, 2000);
+            self.getClient(function (collection) {
+                collection.insertMany(clicks, function () {
+                    cb();
                 });
+            });
 
-                // Remove all events data
-                redisCollector.clearEvents();
-            }
-            else {
-                setTimeout(function () {
-                    self.dumpEvents();
-                }, 2000);
-            }
+            // Remove all events data
+            redisCollector.clearEvents();
         });
     }
 }
