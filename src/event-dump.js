@@ -22,6 +22,7 @@ class EventDump {
     }
 
     dumpEvents() {
+        const self = this;
         // Prevent error if redis is down
         if ( ! redisCollector.getClient()) return;
 
