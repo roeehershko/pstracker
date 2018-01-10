@@ -3,10 +3,8 @@ services:
   pstracker-nginx:
     image: 127.0.0.1:5000/pstracker-nginx
     ports:
-      - target: 80
-        published: 80
-        protocol: tcp
-        mode: host
+      - 80:80
+    network_mode: host
     networks:
       - pstracker
     deploy:
