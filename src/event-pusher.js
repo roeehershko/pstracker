@@ -90,6 +90,7 @@ class EventPusher {
     startPushOperation(cb) {
         const self = this;
         mongoClient.connect(url, function (err, client) {
+            if (err) console.log('ERR:' + err);
             let campaignsCollection = client.db('pstracker').collection('campaigns');
             campaignsCollection.find({}).toArray(function (err, data) {
                 self.campaigns = data;
