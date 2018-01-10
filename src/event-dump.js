@@ -28,11 +28,16 @@ class EventDump {
         redisCollector.getEvents(function (clicks) {
             if (clicks.length) {
 
-                eventsPusher.push(clicks);
+                eventsPusher.push(clicks, function () {
+                    setTimeout(function () {
+                        self.dumpEvents();
+                    }, 2000);
+                });
 
                 // Remove all events data
                 redisCollector.clearEvents();
-
+            }
+            else {
                 setTimeout(function () {
                     self.dumpEvents();
                 }, 2000);
