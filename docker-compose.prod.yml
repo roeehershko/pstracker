@@ -1,10 +1,12 @@
-version: "3"
+version: "3.2"
 services:
   pstracker-nginx:
     image: 127.0.0.1:5000/pstracker-nginx
     ports:
-      - 80:80
-    net: host
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
     networks:
       - pstracker
     deploy:
