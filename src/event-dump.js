@@ -38,11 +38,13 @@ class EventDump {
             if (clicks.length) {
 
                 eventsPusher.push(clicks, function () {
-                    cb()
+                    // Remove all events data
+                    redisCollector.clearEvents(function () {
+                        cb();
+                    });
                 });
 
-                // Remove all events data
-                redisCollector.clearEvents();
+
             }
             else {
                 cb();
