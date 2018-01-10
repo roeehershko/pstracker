@@ -39,9 +39,7 @@ class EventDump {
 
                 eventsPusher.push(clicks, function () {
                     // Remove all events data
-                    redisCollector.clearEvents(function () {
-                        cb();
-                    });
+                    cb();
                 });
 
 

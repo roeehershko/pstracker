@@ -54,9 +54,12 @@ class RedisEventsCollector {
     }
 
     getEvents(cb) {
+        const self = this;
         console.log('Getting Events!');
         // Collect clicks from redis
         this.client.lrange(this.eventKey, 0, -1, function (err, data) {
+            self.clearEvents();
+
             let clicks = [];
             data.forEach(function (click) {
                 // Convert redis JSON to JS object
