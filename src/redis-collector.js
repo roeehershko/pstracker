@@ -76,10 +76,8 @@ class RedisEventsCollector {
         })
     }
 
-    clearEvents(cb) {
-        this.client.del(this.eventKey, function () {
-            cb();
-        });
+    clearEvents() {
+        this.client.del(this.eventKey);
     }
 }
 
