@@ -21,23 +21,12 @@ services:
       replicas: 3
     depends_on:
       - redis
-      - pstracker-mongo
   redis:
     image: redis
     networks:
       - pstracker
     deploy:
       replicas: 3
-  pstracker-mongo:
-    image: mongo
-    volumes:
-      - mongodbdata:/data/db
-    ports:
-      - 27017:27017
-    networks:
-      - pstracker
-volumes:
-    mongodbdata:
 networks:
   pstracker:
     external: true

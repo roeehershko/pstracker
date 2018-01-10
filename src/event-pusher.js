@@ -15,11 +15,6 @@ class EventPusher {
         ];
     }
 
-    clean() {
-        this.triggers = [];
-        this.sessions = [];
-    }
-
     extractTracking(event, appendPrefix) {
         let tracking = {};
         for (let key in event) {
@@ -30,7 +25,7 @@ class EventPusher {
         return tracking;
     }
 
-    push(events) {
+    push(events, cb) {
         const self = this;
         let documents = [];
 
@@ -83,6 +78,7 @@ class EventPusher {
 
             this.insertBulkEventsDocuments(documents, function () {
                 self.client.close();
+                cb();
             });
         });
     }

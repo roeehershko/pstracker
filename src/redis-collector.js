@@ -54,6 +54,7 @@ class RedisEventsCollector {
     }
 
     getEvents(cb) {
+        console.log('Getting Events!');
         // Collect clicks from redis
         this.client.lrange(this.eventKey, 0, -1, function (err, data) {
             let clicks = [];

@@ -1,5 +1,5 @@
 {
   "mongo": {
-    "host": "pstracker-mongo"
+    "host": "10.135.62.171"
   }
 }

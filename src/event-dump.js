@@ -10,40 +10,42 @@ class EventDump {
     }
 
     start() {
+        console.log('Started!');
         const self = this;
         setTimeout(function () {
             try {
                 self.dumpEvents(function () {
-                    setTimeout(self.start, 2000);
+                    console.log('Restarting!');
+                    setTimeout(function () {
+                        self.start()
+                    }, 2000);
                 });
             }
             catch (e) {
                 console.log('Interval failed, probably mongo connection issue')
             }
-        }, 6000)
+        }, 2000)
     }
 
-    dumpEvents() {
+    dumpEvents(cb) {
+        console.log('Dump Start!');
         const self = this;
         // Prevent error if redis is down
         if ( ! redisCollector.getClient()) return;
 
         redisCollector.getEvents(function (clicks) {
+            console.log('Dumping!!');
             if (clicks.length) {
 
                 eventsPusher.push(clicks, function () {
-                    setTimeout(function () {
-                        self.dumpEvents();
-                    }, 2000);
+                    cb()
                 });
 
                 // Remove all events data
                 redisCollector.clearEvents();
             }
             else {
-                setTimeout(function () {
-                    self.dumpEvents();
-                }, 2000);
+                cb();
             }
         });
     }
