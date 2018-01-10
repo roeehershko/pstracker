@@ -21,7 +21,7 @@ services:
       replicas: 3
     depends_on:
       - redis
-  pstracker:
+  pstracker-pusher:
     image: 127.0.0.1:5000/pstracker-pusher
     networks:
       - pstracker
