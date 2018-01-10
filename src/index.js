@@ -38,8 +38,8 @@ if (cluster.isMaster) {
             // Add user agent
             data.ua = req.headers['user-agent'];
 
-            // Convert query params to JSON and push to redis list
-            redisCollector.pushEvent(data);
+            // // Convert query params to JSON and push to redis list
+            // redisCollector.pushEvent(data);
 
             // Send user message and end the request (*Not waiting for redis)
             res.send('Query params logged!, (Cluster #' + cluster.worker.id + ')');
