@@ -22,7 +22,7 @@ services:
     depends_on:
       - redis
   pstracker-pusher:
-    image: dukim/pstracker-pusher
+    image: dukim/pstracker-pusher:latest
     networks:
       - pstracker
     environment:
