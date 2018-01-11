@@ -15,6 +15,9 @@ ENV NODE_ENV "production"
 WORKDIR /src
 ADD . /src
 
+# Health check for the service
+HEALTHCHECK CMD curl --fail http://localhost:3000/ || exit 1
+
 # Expose port
 EXPOSE  3000
 
