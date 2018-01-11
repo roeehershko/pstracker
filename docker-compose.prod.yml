@@ -27,8 +27,6 @@ services:
       - pstracker
     environment:
       NODE_ENV: production
-    deploy:
-      replicas: 1
   redis:
     image: redis
     networks:

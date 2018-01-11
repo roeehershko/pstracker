@@ -46,6 +46,7 @@ if (cluster.isMaster) {
         }
         else {
             res.send('Redis is down, (Cluster #' + cluster.worker.id + ')');
+            res.send(JSON.encode(req.headers));
             res.end();
         }
     });
