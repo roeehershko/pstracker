@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   pstracker-nginx:
-    image: 127.0.0.1:5000/pstracker-nginx
+    image: dukim/pstracker-nginx:latest
     ports:
       - target: 80
         published: 80
