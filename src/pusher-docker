@@ -16,4 +16,4 @@ WORKDIR /src
 ADD . /src
 
 # Run app using nodemon
-CMD ["nodemon", "/src/pusher.js"]
+CMD ["node", "/src/pusher.js"]

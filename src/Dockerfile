@@ -19,4 +19,4 @@ ADD . /src
 EXPOSE  3000
 
 # Run app using nodemon
-CMD ["nodemon", "/src/index.js"]
+CMD ["node", "/src/index.js"]
