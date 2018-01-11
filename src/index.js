@@ -41,7 +41,7 @@ if (cluster.isMaster) {
             redisCollector.pushEvent(data);
 
             // Send user message and end the request (*Not waiting for redis)
-            res.send('Query params logged!, (Cluster XXXYYYX #' + cluster.worker.id + ')');
+            res.send('Query params logged!, (Cluster WAKAKAKA #' + cluster.worker.id + ')');
             res.end();
         }
         else {
