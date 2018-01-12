@@ -1,17 +1,30 @@
-class SplitCollection {
+module.exports.SplitCollection = class {
 
-    constructor() {
-        this.splits = [];
+    constructor(endPoints) {
+        this.endPoints = endPoints;
     }
 
-    add(splits) {
-        this.splits = this.splits.concat(splits)
-    }
+    getSplit() {
+        let endPoint = null;
+        let startPoint = 0;
+        let splitPoints = [];
 
-    split() {
-        let weights = [
-            1,1,1,2,2,3,3,4,4,4,4,6,6,6
-        ]
-    }
+        this.endPoints.forEach(function (endPoint) {
+            startPoint += endPoint.weight;
+            splitPoints.push({
+                startPoint: startPoint,
+                endPoint: endPoint
+            });
+        });
 
-}
+        let random = Math.round(Math.random() * (startPoint - 1)) + 1;
+
+        splitPoints.forEach(function (splitPoint) {
+            if (splitPoint.startPoint >= random && ! endPoint) {
+                endPoint = splitPoint;
+            }
+        });
+
+        return endPoint.endPoint.hasOwnProperty('lander') ? endPoint.endPoint.lander : null;
+    }
+};

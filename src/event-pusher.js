@@ -44,8 +44,8 @@ class EventPusher {
                         ? campaign.sources.find(o => o.name === event.s)
                         : campaign.sources.find(o => o.is_default === true);
 
-                    // Create unique identity for session campaign + ip + 4 days max
-                    const guid = aguid(campaign.name + '@' + event.ip + (new Date().getTime()) + Math.random() * 10);
+                    // Create unique identity for session campaign + ip
+                    const guid = event.guid ? event.guid : aguid(campaign.name + '@' + (event.uid || event.ip));
 
                     campaignEvent.revenue = parseFloat(event.r) ? event.r : campaignEvent.revenue || 0.0;
                     let session = {
@@ -106,7 +106,7 @@ class EventPusher {
                 bulk.find(document.findO).upsert().updateOne(document.update);
             });
 
-            bulk.execute(function (err, result) {
+            bulk.execute(function () {
                 let end = (new Date()).getTime();
                 console.log('Operation Time: ' + ((end - start) / 1000 + ' seconds'));
                 cb()
