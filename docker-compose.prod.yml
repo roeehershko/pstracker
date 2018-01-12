@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   pstracker-nginx:
-    image: 127.0.0.1:5000/pstracker-nginx
+    image: dukim/pstracker-nginx:latest
     ports:
       - target: 80
         published: 80
@@ -12,7 +12,7 @@ services:
     deploy:
       replicas: 3
   pstracker:
-    image: 127.0.0.1:5000/pstracker
+    image: dukim/pstracker:latest
     networks:
       - pstracker
     environment:
@@ -22,13 +22,11 @@ services:
     depends_on:
       - redis
   pstracker-pusher:
-    image: 127.0.0.1:5000/pstracker-pusher
+    image: dukim/pstracker-pusher:latest
     networks:
       - pstracker
     environment:
       NODE_ENV: production
-    deploy:
-      replicas: 1
   redis:
     image: redis
     networks:
