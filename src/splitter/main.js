@@ -1,6 +1,6 @@
 let mongoClient = require('mongodb').MongoClient;
 let config = require('../config');
-let url = "mongodb://" + config.mongo.host + ":27017/pstracker";
+let url = "mongodb://" + config.mongo.host + ":27017";
 let SplitCollection = require('./split-collection').SplitCollection;
 let aguid = require('aguid');
 

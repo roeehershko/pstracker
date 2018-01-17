@@ -1,6 +1,6 @@
 let mongoClient = require('mongodb').MongoClient;
 let config = require('./config');
-let url = "mongodb://" + config.mongo.host + ":27017/pstracker";
+let url = "mongodb://" + config.mongo.host + ":27017";
 let aguid = require('aguid');
 
 class EventPusher {
@@ -35,9 +35,15 @@ class EventPusher {
 
                 if (campaign) {
                     // Get campaign event
-                    const campaignEvent = event.e
+                    let campaignEvent = event.e
                         ? campaign.events.find(o => o.name === event.e)
                         : campaign.events.find(o => o.is_default === true);
+
+                    if ( ! campaignEvent)
+                        campaignEvent = campaign.events.find(o => o.is_default === true);
+
+                    // Set revenue
+                    campaignEvent.revenue = parseFloat(event.r) ? event.r : campaignEvent.revenue || 0.0;
 
                     // Get campaign source
                     const campaignSource = event.s
@@ -47,7 +53,6 @@ class EventPusher {
                     // Create unique identity for session campaign + ip
                     const guid = event.guid ? event.guid : aguid(campaign.name + '@' + (event.uid || event.ip));
 
-                    campaignEvent.revenue = parseFloat(event.r) ? event.r : campaignEvent.revenue || 0.0;
                     let session = {
                         time: new Date(),
                         ip: event.ip,
