@@ -1,0 +1,44 @@
+version: "3"
+services:
+  listener:
+     build: ../app/listener
+     command: nodemon -L /app/index.js
+     volumes:
+       - ./../app/listener/src/:/app
+     networks:
+       - pstracker
+     ports:
+       - 3000:3000
+     environment:
+       NODE_ENV: development
+  pstracker-nginx:
+    build: ../images/nginx
+    networks:
+      - pstracker
+    ports:
+      - 80:80
+  data_pipe:
+    build: ../app/data_pipe
+    command: nodemon -L /app/index.js
+    volumes:
+       - ./../app/data_pipe:/app
+    networks:
+      - pstracker
+    environment:
+      NODE_ENV: development
+  redis:
+    image: redis
+    networks:
+      - pstracker
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodbdata:/data/db
+    networks:
+      - pstracker
+volumes:
+    mongodbdata:
+networks:
+  pstracker:

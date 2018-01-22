@@ -1,2 +1,4 @@
-src/node_modules
+app/data_pipe/src/node_modules
+app/listener/src/node_modules
+app/splitter/src/node_modules
 .idea
